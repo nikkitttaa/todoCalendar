@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen>
                 titleCentered: true, 
                 ),
               ),
+              
           ],
         ),
         floatingActionButton: FloatingActionButton(onPressed: () {
@@ -120,15 +119,14 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
 
-    CollectionReference recordsCollection = FirebaseFirestore.instance.collection('recordsCollection');
+    CollectionReference recordsCollection = FirebaseFirestore.instance
+    .collection('recordsCollection')
+    .doc('$year year')
+    .collection(monthName)
+    .doc('$day days').collection('$day days');
 
-    DocumentReference yearCollection = recordsCollection.doc('$year year');
-    CollectionReference monthCollection = yearCollection.collection(monthName);
-    CollectionReference dayCollection = monthCollection.doc('$day days').collection('$day days');
-
-    dayCollection.add({'record':record}).then((value){
+    recordsCollection.add({'record':record}).then((value){
       recordController.clear();
     });
-  } 
-
+  }
 }
