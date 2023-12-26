@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "609864532278",
+    "firebase_url": "https://todocalendar-21b66-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "todocalendar-21b66",
+    "storage_bucket": "todocalendar-21b66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609864532278:android:8ecabe2a7009fe38927397",
+        "android_client_info": {
+          "package_name": "com.example.todo_calendar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbmdA8ZVgBihZ3iPqWJoiKxvmVbRIb_IY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
