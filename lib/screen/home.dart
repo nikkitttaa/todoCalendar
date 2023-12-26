@@ -15,12 +15,15 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
 
   DateTime today = DateTime.now();
-
+  CalendarFormat format = CalendarFormat.week;
   void selectedDayFunc(DateTime day, DateTime focusedDay){
     setState(() {
+      format = CalendarFormat.month;
       today = day;
     });
   }
+
+
   CollectionReference recordsCollection = FirebaseFirestore.instance.collection('recordsCollection');
   TextEditingController recordController = TextEditingController();
 
@@ -30,10 +33,20 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         title: const Text('todo calendar'),
         centerTitle: true,
+        backgroundColor: Colors.blue,
+        actions: [
+          IconButton(onPressed: () {
+              setState(() {
+                format = CalendarFormat.week;
+              });
+            }, 
+            icon: const Icon(Icons.arrow_circle_up)),
+        ],
       ),
       body: Column(
         children: [
           TableCalendar(
+            locale: 'ru_RU',
             focusedDay: today, 
             firstDay: DateTime.utc(2020), 
             lastDay: DateTime.utc(2030),
@@ -44,7 +57,10 @@ class _HomeScreenState extends State<HomeScreen>
               formatButtonVisible: false, 
               titleCentered: true, 
               ),
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            calendarFormat: format,
             ),
+            
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -67,9 +83,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Map<String, dynamic> recordData = document.data() as Map<String, dynamic>;
                     String recordText = recordData['record'];
 
-                  
                 return ListTile(
-                tileColor: Colors.blue,
                 title: Text(recordText),  
                 trailing: IconButton(
                   onPressed: () {
