@@ -5,29 +5,67 @@ import 'package:flutter/material.dart';
 
 
 class FirestoreDB{
-  
-  void addDataInFirestoreDB(TextEditingController recordController, DateTime today){
-    String record = recordController.text;
+  late String recordName;
+  void addRecordNameInFirestoreDB(TextEditingController recordController, DateTime today){
+    recordName = recordController.text;
 
     int year = today.year;
     int month = today.month;
     int day = today.day;
-
-    
-
-
+  
     CollectionReference recordsCollection = FirebaseFirestore.instance
     .collection('recordsCollection')
     .doc('$year year')
     .collection(monthName(month))
     .doc('$day days').collection('$day days');
      
-    recordsCollection.add({'record':record}).then((value){
-      print('\u001b[32mdata added on $day.$month.$year\u001b[0m');
+    recordsCollection.add({'recordName':recordName}).then((value){
+      print('\u001b[32mrecordName added on $day.$month.$year\u001b[0m');
       recordController.clear();
     }).then((error){
       print(error);
     });
+  }
+
+
+  void addRecordDescInFirestoreDB(TextEditingController recordController, DateTime today)async{
+    String recordDesc = recordController.text;
+
+    int year = today.year;
+    int month = today.month;
+    int day = today.day;
+  
+    CollectionReference recordsCollection = FirebaseFirestore.instance
+    .collection('recordsCollection')
+    .doc('$year year')
+    .collection(monthName(month))
+    .doc('$day days').collection('$day days');
+     
+
+    QuerySnapshot querySnapshot = await recordsCollection.where('recordName').get();
+    List<DocumentSnapshot> documents = querySnapshot.docs;
+
+    // ignore: prefer_is_empty
+    if (documents.length > 0) {
+      DocumentSnapshot document = documents[0];
+      String documentId = document.id;
+
+      await recordsCollection.doc(documentId).update({'recordDesc': recordDesc});
+    } else {
+      print('Документ не найден');
+    }
+  }
+  
+  
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStream(today){
+    return FirebaseFirestore.instance
+      .collection('recordsCollection')
+      .doc('${today.year} year')
+      .collection(monthName(today.month))
+      .doc('${today.day} days')
+      .collection('${today.day} days')
+      .snapshots();
   }
 
   String monthName(month){
@@ -50,5 +88,4 @@ class FirestoreDB{
 
     return monthName;
   }
-
 }

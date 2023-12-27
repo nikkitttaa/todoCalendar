@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_calendar/firebase/firestore.dart';
+import 'package:todo_calendar/helper/show_dialog.dart';
+import 'package:todo_calendar/screen/record_content.dart';
 
 FirestoreDB fsDB = FirestoreDB();
+ShowDialog sd = ShowDialog();
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,13 +20,24 @@ class _HomeScreenState extends State<HomeScreen>
 
   DateTime today = DateTime.now();
   CalendarFormat format = CalendarFormat.week;
+
   void selectedDayFunc(DateTime day, DateTime focusedDay){
     setState(() {
-      format = CalendarFormat.month;
       today = day;
     });
   }
 
+  bool foramtIsWeek = true;
+
+  void headerTappedFunc(focusedDay){
+    setState(() {
+      foramtIsWeek = !foramtIsWeek;
+      if(foramtIsWeek == true) {
+        format = CalendarFormat.week;
+        }
+      else {format = CalendarFormat.month;}
+    });
+  }
 
   CollectionReference recordsCollection = FirebaseFirestore.instance.collection('recordsCollection');
   TextEditingController recordController = TextEditingController();
@@ -33,15 +48,7 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         title: const Text('todo calendar'),
         centerTitle: true,
-        backgroundColor: Colors.blue,
-        actions: [
-          IconButton(onPressed: () {
-              setState(() {
-                format = CalendarFormat.week;
-              });
-            }, 
-            icon: const Icon(Icons.arrow_circle_up)),
-        ],
+        backgroundColor: Colors.blue, 
       ),
       body: Column(
         children: [
@@ -59,17 +66,12 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarFormat: format,
+            onHeaderTapped: (focusedDay) => headerTappedFunc(focusedDay),
             ),
             
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('recordsCollection')
-                  .doc('${today.year} year')
-                  .collection(fsDB.monthName(today.month))
-                  .doc('${today.day} days')
-                  .collection('${today.day} days')
-                  .snapshots(),
+              stream: fsDB.getStream(today),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Ошибка: ${snapshot.error}');
@@ -81,17 +83,26 @@ class _HomeScreenState extends State<HomeScreen>
                 return ListView(
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> recordData = document.data() as Map<String, dynamic>;
-                    String recordText = recordData['record'];
-
-                return ListTile(
-                title: Text(recordText),  
-                trailing: IconButton(
-                  onPressed: () {
-                    document.reference.delete();
-                  },
-                  icon: const Icon(Icons.delete)),
-                );
-  
+                    String recordName = recordData['recordName'];
+                    
+                return Container(
+                  margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.blue),
+                  child: GestureDetector(
+                    child: ListTile(
+                      title: Text(recordName),  
+                      trailing: IconButton(
+                        onPressed: () {
+                          sd.showDialogWithDeleteRecord(context, document, recordName);
+                        },
+                        icon: const Icon(Icons.delete),),
+                      ),
+                      onTap: (){
+                        Navigator.push(context, 
+                        MaterialPageRoute(builder: ((context) =>  RecordScreen(today: today))));
+                      }
+                    )
+                  );
                   }).toList(),
                 );
               },
@@ -100,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {
-        showDialogWithAddData(context);
+        sd.showDialogWithAddRecord(context,recordController,today);
       }, 
       backgroundColor: Colors.deepPurpleAccent,
       child: const Icon(Icons.add, color: Colors.white,),
@@ -110,36 +121,4 @@ class _HomeScreenState extends State<HomeScreen>
     
   }
 
-  void showDialogWithAddData(BuildContext context){
-    var dialog = AlertDialog(
-      title: Text('Add record on ${today.day}.${today.month}.${today.year}'),
-      content: TextField(
-        controller: recordController,
-        decoration: const InputDecoration(
-        hintText: 'Enter record',
-        ),
-      ),
-      actions: [
-        TextButton(onPressed: (){
-          fsDB.addDataInFirestoreDB(recordController, today);
-          recordController.clear();
-          Navigator.pop(context);
-        }, 
-        child: const Text('Add')
-        ),
-
-        TextButton(onPressed: (){
-          recordController.clear();
-          Navigator.pop(context);
-        }, 
-        child: const Text('Close')
-        )
-      ],
-    );
-
-    showDialog(context: context, builder: (BuildContext context) {
-      return dialog;
-    });
-  } 
-  
 }
