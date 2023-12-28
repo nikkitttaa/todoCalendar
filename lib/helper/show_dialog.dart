@@ -6,12 +6,18 @@ class ShowDialog{
 
   void showDialogWithAddRecord(BuildContext context, TextEditingController controller, today){
     var dialogAdd = AlertDialog(
-      title: Text('Add record on ${today.day}.${today.month}.${today.year}'),
+      backgroundColor: Colors.grey[800],
+      title: Text('Add record on ${today.day}.${today.month}.${today.year}', style: const TextStyle(color: Colors.white),),
       content: TextField(
         controller: controller,
+        cursorColor: const Color.fromARGB(255, 77, 150, 122),
         decoration: const InputDecoration(
-        hintText: 'Enter name record',
+          hintText: 'Enter name record', hintStyle: TextStyle(color: Colors.grey,),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 77, 150, 122))),
         ),
+        style: const TextStyle(fontSize: 18, color: Colors.white,),
+        maxLines: null,
+        
         maxLength: 50,
       ),
       actions: [
@@ -20,14 +26,15 @@ class ShowDialog{
           controller.clear();
           Navigator.pop(context);
         }, 
-        child: const Text('Add')
+        child: const Text('Add', style: TextStyle(color: Color.fromARGB(255, 77, 150, 122)))
         ),
 
         TextButton(onPressed: (){
           controller.clear();
           Navigator.pop(context);
+          
         }, 
-        child: const Text('Close')
+        child: const Text('Close', style: TextStyle(color: Color.fromARGB(255, 77, 150, 122)))
         )
       ],
     );
@@ -37,56 +44,25 @@ class ShowDialog{
     });
   } 
 
-  void showDialogWithDeleteRecord(BuildContext context, document,record)
+  void showDialogWithDeleteRecord(BuildContext context, document, recordName)
   {
     var dialogDelete = AlertDialog(
-      title: Text('Are you sure you want to delete the record: $record?'),
+      backgroundColor: Colors.grey[800],
+      title: Text('Are you sure you want to delete the record: $recordName?', style: const TextStyle(color: Colors.white)),
       actions: [
         TextButton(onPressed: (){
           document.reference.delete();
           Navigator.pop(context);
         }, 
-        child: const Text('Delete')),
+        child: const Text('Delete', style: TextStyle(color: Color.fromARGB(255, 77, 150, 122)))),
         TextButton(onPressed: () {
           Navigator.pop(context);
         }, 
-        child: const Text('Close')),
+        child: const Text('Close', style: TextStyle(color: Color.fromARGB(255, 77, 150, 122)))),
       ],
     );
     showDialog(context: context, builder: (BuildContext context){
       return dialogDelete;
-    });
-  }
-
-  void showDialogWithAddRecordDescription(BuildContext context, TextEditingController controller, today){
-    var dialogAddDesc = AlertDialog(
-      title: Text('Add record on ${today.day}.${today.month}.${today.year}'),
-      content: TextField(
-        controller: controller,
-        decoration: const InputDecoration(
-        hintText: 'Enter description record',
-        ),
-        maxLength: 1000,
-      ),
-      actions: [
-        TextButton(onPressed: (){
-          fsDB.addRecordDescInFirestoreDB(controller, today);
-          controller.clear();
-          Navigator.pop(context);
-        }, 
-        child: const Text('Add')
-        ),
-
-        TextButton(onPressed: (){
-          controller.clear();
-          Navigator.pop(context);
-        }, 
-        child: const Text('Close')
-        )
-      ],
-    );
-    showDialog(context: context, builder: (BuildContext context){
-      return dialogAddDesc;
     });
   }
 
