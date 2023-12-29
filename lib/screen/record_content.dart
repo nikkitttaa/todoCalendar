@@ -32,18 +32,18 @@ class _RecordScreenState extends State<RecordScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Description'),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 77, 150, 122),
+        backgroundColor: const Color.fromARGB(216, 180, 223, 100),
         actions: [
           IconButton(onPressed: (){
             fsDB.updateRecord(descController, today, nameController);
             final saveInfoBar = const SnackBar(
               content: Text('Record has been saved!', style: TextStyle(fontSize: 16)),
               duration: Duration(seconds: 3),
-              backgroundColor: Color.fromARGB(255, 77, 150, 122),
+              backgroundColor: Color.fromARGB(255, 104, 194, 159),
               showCloseIcon: true,
             );
             ScaffoldMessenger.of(context).showSnackBar(saveInfoBar);
@@ -93,7 +93,7 @@ class _RecordScreenState extends State<RecordScreen>
                       floatingLabelStyle : TextStyle(color: Color.fromARGB(255, 77, 150, 122)),
                       focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 77, 150, 122))),
                     ),
-                    style: const TextStyle(fontSize: 28, color: Colors.white,),
+                    style: const TextStyle(fontSize: 28),
                     maxLength: 50,
                     maxLines: null,
                   ),
@@ -104,7 +104,7 @@ class _RecordScreenState extends State<RecordScreen>
                       floatingLabelStyle : TextStyle(color: Color.fromARGB(255, 77, 150, 122)),
                       focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 77, 150, 122))),
                     ),
-                    style: const TextStyle(fontSize: 18, color: Colors.white,),
+                    style: const TextStyle(fontSize: 18),
                     maxLines: null,
                     maxLength: 1000,
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_calendar/firebase/firestore.dart';
 import 'package:todo_calendar/helper/show_dialog.dart';
+import 'package:todo_calendar/screen/profile.dart';
 import 'package:todo_calendar/screen/record_content.dart';
 
 FirestoreDB fsDB = FirestoreDB();
@@ -43,11 +44,17 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('todo calendar'),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 77, 150, 122), 
+        backgroundColor: const Color.fromARGB(255, 30, 235, 156), 
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
+          }, 
+          icon: const Icon(Icons.person))
+        ],
       ),
       body: Column(
         children: [
@@ -68,14 +75,12 @@ class _HomeScreenState extends State<HomeScreen>
             headerStyle: const HeaderStyle(
               formatButtonVisible: true, 
               titleCentered: true, 
-              titleTextStyle: TextStyle(color: Colors.white, fontSize: 18),
-              formatButtonTextStyle: TextStyle(color: Colors.white, ), 
+              titleTextStyle: TextStyle( fontSize: 18),
               ),
 
             calendarStyle: const CalendarStyle(selectedDecoration: BoxDecoration(
-              color: Color.fromARGB(255, 77, 150, 122), shape: BoxShape.circle),
-              todayDecoration: BoxDecoration(color: Color.fromARGB(255, 40, 61, 54), shape: BoxShape.circle),
-              defaultTextStyle: TextStyle(color: Colors.white)
+              color:  Color.fromARGB(255, 105, 211, 170), shape: BoxShape.circle),
+              todayDecoration: BoxDecoration(color: Color.fromARGB(158, 102, 161, 142), shape: BoxShape.circle),
               ),
               
             ),
@@ -96,7 +101,11 @@ class _HomeScreenState extends State<HomeScreen>
                   Map<String, dynamic> record = document.data()! as Map<String, dynamic>;
                     return Container(
                       margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color.fromARGB(255, 77, 150, 122)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), gradient: const LinearGradient(colors: [
+                        Color.fromARGB(255, 81, 255, 159),
+                        Color.fromARGB(255, 255, 228, 73)
+                      ]
+                      )),
                       child: ListTile(
                         title: Text(record['recordName']),
                         trailing: IconButton(onPressed: (){
@@ -121,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: FloatingActionButton(onPressed: () {
         sd.showDialogWithAddRecord(context,recordController,today);
       }, 
-      backgroundColor: const Color.fromARGB(255, 77, 150, 122),
+      backgroundColor: const Color.fromARGB(255, 218, 243, 79),
       child: const Icon(Icons.add, color: Colors.white,),
       
       ),
