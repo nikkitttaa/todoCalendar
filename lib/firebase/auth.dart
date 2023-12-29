@@ -45,7 +45,6 @@ class FirebaseAuthentication{
               behavior: SnackBarBehavior.floating,
             );
             ScaffoldMessenger.of(context).showSnackBar(errorInfoBar);
-        
       }
       else{
           isSaved = true;
