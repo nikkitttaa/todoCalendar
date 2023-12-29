@@ -42,5 +42,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-#ignore firebase_options
+
 firebase_options.dart
