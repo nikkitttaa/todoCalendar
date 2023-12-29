@@ -99,8 +99,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen>
                     ), 
                     child: const Text('enter', style: TextStyle(fontSize: 16),),
                     ),
-
-                 
                 ],
               ),
             ),
