@@ -17,7 +17,6 @@ class ShowDialog{
         ),
         style: const TextStyle(fontSize: 18, color: Colors.white,),
         maxLines: null,
-        
         maxLength: 50,
       ),
       actions: [
@@ -32,7 +31,6 @@ class ShowDialog{
         TextButton(onPressed: (){
           controller.clear();
           Navigator.pop(context);
-          
         }, 
         child: const Text('Close', style: TextStyle(color: Color.fromARGB(255, 77, 150, 122)))
         )
